@@ -1,0 +1,1 @@
+{"297a280e5e0d415c2e44849c999b1c6c:5bd835b0d6b1d4ada3b9f0db936e82c8":{"statistic":{"failed":0,"broken":0,"skipped":0,"passed":1,"unknown":0,"total":1},"items":[{"uid":"3b2f243f7ec30873","reportUrl":"https://Shrikeland.github.io/qaguru-playwright-search/5//#testresult/3b2f243f7ec30873","status":"passed","time":{"start":1731012760848,"stop":1731012769455,"duration":8607}}]}}
