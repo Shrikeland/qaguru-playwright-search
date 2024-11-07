@@ -1,70 +1,63 @@
-# main
-name: pw test
-# trigger
+name: pw tests
+
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
-# job
+  schedule:
+    - cron: '0 0 * * *'
+
 jobs:
   test:
-    timeout-minutes: 60
-    # env
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    # checkout
-      - uses: actions/checkout@v4
-    # node install
-      - uses: actions/setup-node@v4
+      - name: checkout branch
+        uses: actions/checkout@v3
+
+      - name: install node
+        uses: actions/setup-node@v3
         with:
-          node-version: lts/*
-    # deps install
-      - run: npm i
-    # pw install
+          node-version: '18'
+
+      - name: install deps
+        run: npm install
+      
       - name: install pw
-        run: npx playwright install --with-deps
-      - name: run test
+        run: npx playwright install  
+
+      - name: run pw tests
         run: npm run test
-    # pw report
-      - uses: actions/upload-artifact@v4
-        if: always()
-        continue-on-error: true
-        with:
-          name: test-results
-          path: test-results
-          retention-days: 14
-    # allure report
-      - uses: actions/upload-artifact@v4
-        if: always()
-        continue-on-error: true
+
+      - name: upload allure results
+        uses: actions/upload-artifact@v3
         with:
           name: allure-results
           path: allure-results
-          retention-days: 14
-    # history report
-      - uses: actions/checkout@v4
+          retention-days: 1
+
+      - name: get allure history
+        uses: actions/checkout@v3
         if: always()
         continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
-    # compile reports
-      - uses: simple-elf/allure-report-action@master
+
+      - name: generate allure report
+        uses: simple-elf/allure-report-action@master
         if: always()
         id: allure-report
         with:
           allure_results: allure-results
-          gh-pages: gh-pages
+          gh_pages: gh-pages
           allure_report: allure-report
           allure_history: allure-history
-          keep_reports: 20
-    # deploy report
-      - name: deploy report
+          keep_reports: 10
+
+      - name: deploy report to gh-pages
         if: always()
-        uses: peaceiris/actions-gh-pages@v4
-        env:
+        uses: peaceiris/actions-gh-pages@v3
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
           publish_dir: allure-history
+          publish_branch: gh-pages
