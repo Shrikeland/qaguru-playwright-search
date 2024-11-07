@@ -1,0 +1,29 @@
+# main
+name: pw test
+# trigger
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+# job
+jobs:
+  test:
+    timeout-minutes: 60
+    # env
+    runs-on: ubuntu-latest
+    steps:
+    # checkout
+      - uses: actions/checkout@v4
+    # node install
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+    # deps install
+      - run: npm i
+    # pw install
+      - name: install pw
+        run: npx playwright install --with-deps
+      - name: run test
+        run: npm run test
