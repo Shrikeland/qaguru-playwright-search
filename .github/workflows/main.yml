@@ -12,10 +12,10 @@ jobs:
       contents: write
     steps:
       - name: checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
@@ -29,14 +29,14 @@ jobs:
         run: npm run test
 
       - name: upload allure results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results
           retention-days: 1
 
       - name: get allure history
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         if: always()
         continue-on-error: true
         with:
@@ -56,7 +56,7 @@ jobs:
 
       - name: deploy report to gh-pages
         if: always()
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-history
